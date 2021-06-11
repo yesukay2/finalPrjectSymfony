@@ -1,0 +1,83 @@
+{% extends('base.html.twig') %}
+
+{% block body %}
+<h1>Manager Dashboard!</h1>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="{{ path('manager_filter') }}">
+            <div class="form-group">
+                <label>Filter by status</label>
+                <select name="status" class="form-control">
+                <option value="DEFAULT">Choose Status</option>
+                <option value="ALL">All Orders</option>
+                <option value="ORDER_RECEIVED">Order Received</option>
+                <option value="ORDER_CANCELED">Order Canceled</option>
+                <option value="ORDER_PROCESSING">Order Processing</option>
+                <option value="ORDER_READY_TO_SHIP">Order Ready to Ship</option>
+                <option value="ORDER_SHIPPED">Order Shipped</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="{{ path('manager_search') }}">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Search by order ID</label>
+                <input type="number" class="form-control" name="orderId" placeholder="Enter order ID to search for." required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+  <div style="height: 30px"></div>
+    <a href="{{ path('management_index') }}" class="btn btn-dark">Refresh List</a>
+  </div>
+
+  </div>
+
+
+
+<div style="height: 30px;"></div>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Items</th>
+        <th scope="col">Status</th>
+        <th scope="col">Total Amount</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+          <tr>
+            <th scope="row">{{ order.id }}</th>
+            <td>{{ order.items }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.total }}</td>
+            <td><a href="{{ path('management_view_order', {id: order.id}) }}" class="btn btn-info">View</a></td>
+          </tr>
+      {% endfor %}
+      
+    </tbody>
+  </table>
+  
+</div>
+<div>
+    {{ knp_pagination_render(orders) }}
+</div>
+
+
+{% endblock %}

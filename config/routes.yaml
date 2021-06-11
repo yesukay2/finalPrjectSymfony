@@ -1,0 +1,97 @@
+index:
+   path: /
+   controller: App\Controller\PagesController::index
+   methods: [GET]
+
+handle_login:
+   path: /handle-login
+   controller: App\Controller\PagesController::handleLogin
+   methods: [GET]
+
+orders_list:
+   path: /api/v1/orders
+   controller: App\Controller\OrderController::index
+   methods: [GET]
+
+new_orders_list:
+   path: /api/v1/orders/new
+   controller: App\Controller\OrderController::newOrders
+   methods: [GET]
+
+canceled_orders_list:
+   path: /api/v1/orders/canceled
+   controller: App\Controller\OrderController::canceledOrders
+   methods: [GET]
+
+order_create:
+   path: /api/v1/orders
+   controller: App\Controller\OrderController::createOrder
+   methods: [POST]
+
+order_cancel:
+   path: /api/v1/order/cancel
+   controller: App\Controller\OrderController::cancelOrder
+   methods: [POST]
+
+# Packing dept. routes
+picking_index:
+   path: /picker
+   controller: App\Controller\PickingController::index
+   methods: [GET]
+
+picking_view_order:
+   path: /picking/order/{id}
+   controller: App\Controller\PickingController::viewOrder
+   methods: [GET]
+
+picking_order_processing:
+   path: /picking/order/processing/{id}
+   controller: App\Controller\PickingController::processingOrder
+   methods: [POST]
+
+picking_order_processing_complete:
+   path: /picking/order/processing/complete/{id}
+   controller: App\Controller\PickingController::orderProcessingComplete
+   methods: [POST]
+
+# Shipping dept. routes
+shipping_index:
+   path: /shipper
+   controller: App\Controller\ShippingController::index
+   methods: [GET]
+
+shipping_view_order:
+   path: /shipping/order/{id}
+   controller: App\Controller\ShippingController::viewOrder
+   methods: [GET]
+
+shipping_order_processing:
+   path: /shipping/order/issue/{id}
+   controller: App\Controller\ShippingController::submitIssue
+   methods: [POST]
+
+ship_order:
+   path: /shipping/order/ship/{id}
+   controller: App\Controller\ShippingController::shipOrder
+   methods: [POST]
+
+# Management dept. routes
+management_index:
+   path: /manager
+   controller: App\Controller\ManagementController::index
+   methods: [GET]
+
+management_view_order:
+   path: /manager/order/{id}
+   controller: App\Controller\ManagementController::viewOrder
+   methods: [GET]
+
+manager_filter:
+   path: /manager/filter
+   controller: App\Controller\ManagementController::filterOrder
+   methods: [POST]
+
+manager_search:
+   path: /manager/search
+   controller: App\Controller\ManagementController::searchOrder
+   methods: [POST]

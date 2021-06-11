@@ -1,0 +1,210 @@
+{% extends('base.html.twig') %}
+
+{% block body %}
+
+<h5>About order</h5>
+
+<div class="card">
+  <div class="card-header">
+    Issues
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Send issue to Picker</h5>
+    <p class="card-text">Fill form below to submit an issue for this order.</p>
+    
+    <form method="post" action="{{ path('shipping_order_processing', {id: order.id}) }}">
+    <div class="form-group">
+        <label>Choose an issue</label>
+        <select name="issueType" class="form-control">
+        <option value="item-missing">Item missing</option>
+        <option value="item-damaged">Item damaged</option>
+        <option value="item-mismatched">Item mismatched</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Reason</label>
+        <textarea class="form-control" name="reason" rows="3" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+<div style="height: 40px"></div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Items</h5>
+        <p class="card-text">{{ order.items }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Order status</h5>
+        <p class="card-text">{{ order.status }}</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Shipping Address</h5>
+        <p class="card-text">{{ order.shippingdetails }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Discount</h5>
+        <p class="card-text">{{ order.discount }}</p>
+      </div>
+    </div>
+  </div>
+
+   <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Total Cost</h5>
+        <p class="card-text">${{ order.total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Date</h5>
+        <p class="card-text">{{ order.createdAt.format('Y-m-d H:i:s') }}</p>
+      </div>
+    </div>
+  </div>
+
+    <div class="col-sm-12">
+        <div style="height: 20px"></div>
+        <h5>Package Details</h5>
+        <div style="height: 10px"></div>
+    </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Box ID</h5>
+        <p class="card-text">{{ package.boxId }}</p>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Tracking Number</h5>
+        <p class="card-text">{{ package.trackingNumber }}</p>
+        {% if package.trackingNumber == null %}
+            <span class="badge badge-secondary">No tracking numeber yet</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Proof</h5>
+        <p class="card-text">{{ package.proof }}</p>
+        {% if package.proof != null %}
+            <a href="{{ path('download_file', {filename: package.proof}) }}">View Proof File</a>
+        {% endif %}
+        {% if package.proof == null %}
+            <span class="badge badge-secondary">Proof would be available after shipment is completed</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Last updated</h5>
+        <p class="card-text">{{ package.updatedAt.format('Y-m-d H:i:s') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Shipping Company</h5>
+        <p class="card-text">{{ package.shippingCompany }}</p>
+        {% if package.shippingCompany == null %}
+        <span class="badge badge-secondary">No company assigned yet</span>
+        {% endif %}
+
+        {% if order.status != "ORDER_SHIPPED" %}
+        <form method="post" action="{{ path('ship_order', {id: order.id}) }}" enctype="multipart/form-data">
+        <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+            <div class="form-group">
+                <label>Shipping Company</label>
+                <input type="text" name="shippingCompany" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Tracking Number</label>
+                <input type="text" name="trackingNumber" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Proof</label>
+                <input type="file" name="proof" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Ship order</button>
+            </form>
+            {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="height: 30px"></div>
+
+<h5>Issues</h5>
+{% if issues is empty %}
+    <span class="badge badge-secondary">No issues have been reported for this order</span>
+{% endif %}
+
+<ul class="list-group">
+    {% for issue in issues %}
+        <li class="list-group-item"><span class="badge badge-warning"> {{ issue.issueType }} </span> - {{ issue.reason }} <br/><span class="text-muted">{{ issue.createdAt.format('Y-m-d H:i:s') }}</span></li>
+    {% endfor %}
+</ul>
+
+<div style="height: 100px"></div>
+
+
+
+{% endblock %}

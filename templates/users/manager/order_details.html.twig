@@ -1,0 +1,213 @@
+{% extends('base.html.twig') %}
+
+{% block body %}
+
+<h5>About order: #{{order.id}}</h5>
+
+<div style="height: 40px"></div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Items</h5>
+        <p class="card-text">{{ order.items }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Order status</h5>
+        <p class="card-text">{{ order.status }}</p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Shipping Address</h5>
+        <p class="card-text">{{ order.shippingdetails }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Discount</h5>
+        <p class="card-text">{{ order.discount }}</p>
+      </div>
+    </div>
+  </div>
+
+   <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Total Cost</h5>
+        <p class="card-text">${{ order.total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Date</h5>
+        <p class="card-text">{{ order.createdAt.format('Y-m-d H:i:s') }}</p>
+      </div>
+    </div>
+  </div>
+
+    <div class="col-sm-12">
+        <div style="height: 20px"></div>
+        <h5>Package Details</h5>
+        <div style="height: 10px"></div>
+    </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Box ID</h5>
+        {% if package is null or package.boxId is null %}
+            <span class="badge badge-secondary">No box ID yet</span>
+        {% endif %}
+
+        {% if package != null and  package.boxId != null %}
+                <p class="card-text">{{ package.boxId }}</p>
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+
+  
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Tracking Number</h5>
+         {% if package is null or package.trackingNumber is null %}
+             <span class="badge badge-secondary">No tracking numeber yet</span>
+        {% endif %}
+
+        {% if package != null and  package.trackingNumber != null %}
+                <p class="card-text">{{ package.trackingNumber }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Proof</h5>
+        {% if package is null or package.proof is null %}
+             <span class="badge badge-secondary">Proof would be available after shipment is completed</span>
+        {% endif %}
+
+        {% if package != null and  package.proof != null %}
+                <p class="card-text">{{ package.proof }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+
+        {% if package != null and  package.updatedAt != null %}
+
+            <h5 class="card-title">Last updated</h5>
+            <p class="card-text">{{ package.updatedAt.format('Y-m-d H:i:s') }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+   <div style="height: 30px"></div>
+  </div>
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Shipping Company</h5>
+        {% if package is null or package.shippingCompany is null %}
+             <span class="badge badge-secondary">No company assigned yet</span>
+        {% endif %}
+
+        {% if package != null and  package.shippingCompany != null %}
+                <p class="card-text">{{ package.shippingCompany }}</p>
+        {% endif %}
+
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="height: 30px"></div>
+
+<h5>Issues</h5>
+{% if issues is empty %}
+    <span class="badge badge-secondary">No issues have been reported for this order</span>
+{% endif %}
+
+<ul class="list-group">
+    {% for issue in issues %}
+        <li class="list-group-item"><span class="badge badge-warning"> {{ issue.issueType }} </span> - {{ issue.reason }} <br/><span class="text-muted">{{ issue.createdAt.format('Y-m-d H:i:s') }}</span></li>
+    {% endfor %}
+</ul>
+
+<div style="height: 40px;"></div>
+
+<h5>Order Log</h5>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Status</th>
+        <th scope="col">Log Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+          <tr>
+            <th scope="row">{{ log.createdAt.format('Y-m-d') }} at {{ log.createdAt.format('H:i:s') }}</th>
+            <td>{{ log.status }}</td>
+            <td>{{ log.message }} <br/>
+                {% if log.proof != null %}
+                    <a href="{{ path('download_file', {filename: log.proof}) }}">View Proof File</a>
+                {% endif %}
+            </td>
+          </tr>
+      {% endfor %}
+      
+    </tbody>
+  </table>
+</div>
+
+<div style="height: 100px"></div>
+
+
+
+{% endblock %}
